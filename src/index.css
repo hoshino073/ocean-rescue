@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-abyss: #041b2d;
+  --color-deep: #073a52;
+  --color-ocean: #0d6b8f;
+  --color-lagoon: #2fb4c9;
+  --color-foam: #d7f6f9;
+  --color-coral: #ff8a65;
+  --color-kelp: #2f8f5e;
+  --font-display: "Segoe UI", system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-abyss);
+  color: var(--color-foam);
+  font-family: var(--font-display);
+}
+
+/* Visible focus ring for keyboard users, applied app-wide */
+:focus-visible {
+  outline: 2px solid var(--color-lagoon);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.55;
+  }
+  85% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-105vh) translateX(var(--drift, 12px)) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-pulse {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
