@@ -1,1 +1,0 @@
-function e(e,t,n){return Math.min(n,Math.max(t,e))}function t(e,t){let n=((e-t)%360+360)%360;return n>180?360-n:n}function n(e){return(e%360+360)%360}export{e as n,n as r,t};
