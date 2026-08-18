@@ -4,7 +4,10 @@ import { HomeScreen } from './components/home/HomeScreen';
 import { ScreenTransition } from './components/common/ScreenTransition';
 import { LoadingSplash } from './components/common/LoadingSplash';
 import { CelebrationScreen } from './components/celebration/CelebrationScreen';
+import { ResetScreen } from './components/reset/ResetScreen';
 import { ANIMALS } from './data/animals';
+import { useProgressStore } from './store/useProgressStore';
+import { useFittingGameStore } from './store/useFittingGameStore';
 import type { AnimalId } from './types/animal';
 import type { ExhibitId } from './types/exhibit';
 
@@ -16,15 +19,34 @@ const FittingGame = lazy(() =>
   import('./components/game/FittingGame').then((m) => ({ default: m.FittingGame })),
 );
 
-type Screen = 'home' | 'aquarium' | 'game' | 'celebration';
+type Screen = 'home' | 'aquarium' | 'game' | 'celebration' | 'reset';
 
 function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [selectedId, setSelectedId] = useState<AnimalId | null>(null);
   const [exhibitId, setExhibitId] = useState<ExhibitId>('coral-garden');
+  // Where "Keep my progress" on the reset screen sends the player back to.
+  const [returnScreen, setReturnScreen] = useState<Screen>('aquarium');
+  const resetProgress = useProgressStore((s) => s.resetProgress);
+  const resetFittingGame = useFittingGameStore((s) => s.reset);
 
   const goHome = () => {
     setSelectedId(null);
+    setScreen('home');
+  };
+
+  /** Open the reset confirmation, remembering where to return on cancel. */
+  const askToReset = (from: Screen) => {
+    setReturnScreen(from);
+    setScreen('reset');
+  };
+
+  /** Confirmed reset: clear saved scores and put the app back at the start. */
+  const startOver = () => {
+    resetProgress();
+    resetFittingGame();
+    setSelectedId(null);
+    setExhibitId('coral-garden');
     setScreen('home');
   };
 
@@ -51,6 +73,7 @@ function App() {
                   setScreen('game');
                 }}
                 onBack={goHome}
+                onStartOver={() => askToReset('aquarium')}
               />
             </Suspense>
           </ScreenTransition>
@@ -78,6 +101,16 @@ function App() {
                 setScreen('aquarium');
               }}
               onGoHome={goHome}
+              onStartOver={() => askToReset('celebration')}
+            />
+          </ScreenTransition>
+        )}
+
+        {screen === 'reset' && (
+          <ScreenTransition key="reset">
+            <ResetScreen
+              onConfirm={startOver}
+              onCancel={() => setScreen(returnScreen)}
             />
           </ScreenTransition>
         )}

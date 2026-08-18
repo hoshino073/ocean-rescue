@@ -8,11 +8,17 @@ import { Bubbles } from '../common/Bubbles';
 interface CelebrationScreenProps {
   onViewRehabBay: () => void;
   onGoHome: () => void;
+  /** Open the reset screen to clear every score and play through again. */
+  onStartOver: () => void;
 }
 
 /** Shown once every animal has been fitted at least once — a simple thank-you
  * screen that recaps the whole team and their best scores. */
-export function CelebrationScreen({ onViewRehabBay, onGoHome }: CelebrationScreenProps) {
+export function CelebrationScreen({
+  onViewRehabBay,
+  onGoHome,
+  onStartOver,
+}: CelebrationScreenProps) {
   const bestScores = useProgressStore((s) => s.bestScores);
   const average = Math.round(
     ANIMAL_ORDER.reduce((sum, id) => sum + (bestScores[id] ?? 0), 0) / ANIMAL_ORDER.length,
@@ -67,6 +73,9 @@ export function CelebrationScreen({ onViewRehabBay, onGoHome }: CelebrationScree
 
           <div className="flex flex-wrap justify-center gap-3">
             <Button onClick={onViewRehabBay}>Visit the Rehabilitation Bay</Button>
+            <Button variant="ghost" onClick={onStartOver}>
+              Play Again
+            </Button>
             <Button variant="ghost" onClick={onGoHome}>
               <span className="flex items-center gap-1.5">
                 <HomeIcon />

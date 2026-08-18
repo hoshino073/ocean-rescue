@@ -22,6 +22,8 @@ interface AquariumScreenProps {
   onDeselect: () => void;
   onBeginFitting: (id: AnimalId) => void;
   onBack: () => void;
+  /** Open the reset screen to clear every score and start the rescue again. */
+  onStartOver: () => void;
 }
 
 /** The main aquarium screen: the 3D exhibit, a HUD, the exhibit switcher, and
@@ -34,6 +36,7 @@ export function AquariumScreen({
   onDeselect,
   onBeginFitting,
   onBack,
+  onStartOver,
 }: AquariumScreenProps) {
   const [showExhibitCard, setShowExhibitCard] = useState(false);
   const [fading, setFading] = useState(false);
@@ -100,13 +103,19 @@ export function AquariumScreen({
           </div>
         </div>
 
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-2">
           <span className="hidden items-center gap-1.5 rounded-full border border-white/15 bg-abyss/70 px-3 py-1.5 text-xs text-foam/80 backdrop-blur-md sm:flex">
             <span aria-hidden="true" className="text-emerald-300">
               ✓
             </span>
             {rescued.size} of {ANIMAL_ORDER.length} rescued
           </span>
+          {/* Only worth offering once there is something to clear. */}
+          {rescued.size > 0 && (
+            <Button variant="ghost" onClick={onStartOver}>
+              Start Over
+            </Button>
+          )}
           <Button variant="ghost" onClick={onBack}>
             <span className="flex items-center gap-1.5">
               <HomeIcon />
